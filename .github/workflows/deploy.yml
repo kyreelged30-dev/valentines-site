@@ -5,19 +5,31 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout the repo
       - uses: actions/checkout@v3
+
+      # 2. Setup Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      # 3. Install dependencies
       - run: npm install
+
+      # 4. Build the Vite project
       - run: npm run build
+
+      # 5. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          # Ensure it creates the branch if missing
+          # Automatically create the branch if it doesn't exist
           force_orphan: true
+          # Clean old files so the branch is fresh
+          clean: true
+
